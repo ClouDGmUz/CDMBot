@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bad Words - CDMBot Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">CDMBot Admin</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/blocked_links">Blocked Links</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/bad_words">Bad Words</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h2>Bad Words Management</h2>
+        
+        <!-- Add new bad word form -->
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5 class="card-title">Add New Bad Word</h5>
+                <form action="/bad_words/add" method="POST" class="row g-3 align-items-center">
+                    <div class="col-auto">
+                        <input type="text" class="form-control" id="word" name="word" required placeholder="Enter word">
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary">Add Word</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Bad words list -->
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5 class="card-title">Current Bad Words</h5>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Word</th>
+                                <th>Added By</th>
+                                <th>Added At</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for word in bad_words %}
+                            <tr>
+                                <td>{{ word.word }}</td>
+                                <td>{{ word.added_by }}</td>
+                                <td>{{ word.added_at }}</td>
+                                <td>
+                                    <form action="/bad_words/remove" method="POST" style="display: inline;">
+                                        <input type="hidden" name="word" value="{{ word.word }}">
+                                        <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bad word attempts history -->
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5 class="card-title">Bad Word Attempts History</h5>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>User ID</th>
+                                <th>Chat ID</th>
+                                <th>Message Text</th>
+                                <th>Matched Word</th>
+                                <th>Action Taken</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for attempt in bad_word_attempts %}
+                            <tr>
+                                <td>{{ attempt.timestamp }}</td>
+                                <td>{{ attempt.user_id }}</td>
+                                <td>{{ attempt.chat_id }}</td>
+                                <td>{{ attempt.message_text }}</td>
+                                <td>{{ attempt.matched_word }}</td>
+                                <td>{{ attempt.action_taken }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
