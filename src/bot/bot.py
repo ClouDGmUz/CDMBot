@@ -112,8 +112,15 @@ class TelegramBot:
                             print(f"Error in bad word moderation: {str(e)}")
                             return
 
-        # If no violations or user is admin, echo the message
-        await update.message.reply_text(update.message.text)
+    # If no violations or user is admin, provide a more interactive response
+    if update.message.text.lower().startswith('hello') or update.message.text.lower().startswith('hi'):
+        await update.message.reply_text(f"Hello @{update.message.from_user.username or update.message.from_user.id}! How can I help you today?")
+    elif '?' in update.message.text:
+        await update.message.reply_text("That's an interesting question! Let me think about it... 🤔")
+    elif any(word in update.message.text.lower() for word in ['thanks', 'thank you']):
+        await update.message.reply_text("You're welcome! 😊")
+    else:
+        await update.message.reply_text("I understand your message. Is there anything specific you'd like me to help you with?")
 
     async def add_bad_word(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         if not context.args:
