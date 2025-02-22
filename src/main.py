@@ -1,19 +1,21 @@
-import threading
+import asyncio
 from bot.bot import TelegramBot
 from web.app import app
 from config import Config
+from aioflask import Flask
 
-def run_bot():
+async def run_bot():
     bot = TelegramBot(Config.TELEGRAM_TOKEN)
-    bot.run()
+    await bot.application.run_polling()
 
-def run_web():
-    app.run(host='0.0.0.0', port=5000)
+async def run_web():
+    app.run_task(host='0.0.0.0', port=5000)
+
+async def main():
+    await asyncio.gather(
+        run_bot(),
+        run_web()
+    )
 
 if __name__ == "__main__":
-    # Start bot in a separate thread
-    bot_thread = threading.Thread(target=run_bot)
-    bot_thread.start()
-
-    # Run Flask app in main thread
-    run_web()
+    asyncio.run(main())

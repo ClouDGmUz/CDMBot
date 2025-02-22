@@ -1,7 +1,6 @@
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 from telegram import Update
 from telegram.ext import ContextTypes
-import asyncio
 import re
 from database.db import Database
 
@@ -153,11 +152,3 @@ class TelegramBot:
 
         words_list = "\n".join([f"- {word}" for word in bad_words])
         await update.message.reply_text(f"Current bad words list:\n{words_list}")
-
-    def run(self):
-        # Create a new event loop for this thread
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        # Run the bot using the event loop - simplified to avoid duplicate initialization
-        loop.run_until_complete(self.application.run_polling())
-        loop.close()
