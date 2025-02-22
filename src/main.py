@@ -1,21 +1,23 @@
 import asyncio
+from multiprocessing import Process
 from bot.bot import TelegramBot
 from web.app import app
 from config import Config
-from aioflask import Flask
+
+def run_web():
+    app.run(host='0.0.0.0', port=5000)
 
 async def run_bot():
     bot = TelegramBot(Config.TELEGRAM_TOKEN)
     await bot.application.run_polling()
 
-async def run_web():
-    app.run_task(host='0.0.0.0', port=5000)
+def main():
+    # Start the Flask app in a separate process
+    web_process = Process(target=run_web)
+    web_process.start()
 
-async def main():
-    await asyncio.gather(
-        run_bot(),
-        run_web()
-    )
+    # Run the Telegram bot in the main process
+    asyncio.run(run_bot())
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
